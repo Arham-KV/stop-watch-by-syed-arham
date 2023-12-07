@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="stopwatch">
+        <h1 id="displayTime">00:00:00</h1>
+        <div class="buttons">
+            <img src="images/stop.png" id="stopBtn" onclick="watchStop()">
+            <img src="images/start.png" id="startBtn" onclick="watchStart()">
+            <img src="images/reset.png" onclick="watchReset()">
+
+        </div>
+    </div>
+
+    <script>
+
+        var sec = localStorage.getItem("sec") ?? 0,
+            min = localStorage.getItem("min")  ?? 0,
+            hr = localStorage.getItem("hr")  ?? 0;
+        
+        let [seconds, minutes, hours] = [sec, min, hr],
+            displayTime = document.getElementById("displayTime"),
+            timer = null;
+
+        function stopwatch() {
+            seconds++;
+            if (seconds == 60) {
+                seconds = 0;
+                minutes++;
+                if (minutes == 60) {
+                    minutes = 0;
+                    hours++;
+                }
+            }
+
+            let h = hours < 10 ? hours : hours,
+                m = minutes < 10 ? minutes : minutes,
+                s = seconds < 10 ? seconds : seconds;
+                
+            //displayTime.innerHTML = h + ":" + m + ":" + s;
+            // displayTime.innerHTML = localStorage.getItem("data");
+            hr = h;
+            min = m;
+            sec = s;
+            displayTime.innerHTML = hr + ":" + min + ":" + sec;
+        }
+
+        function watchStart() {
+            
+            if (timer !== null) {
+                clearInterval(timer);
+                saveData();
+            }
+
+            timer = setInterval(stopwatch, 1000);
+            document.getElementById('startBtn').style.display = 'none';
+            document.getElementById('stopBtn').style.display = 'block';
+        }
+
+        function watchStop() {
+            clearInterval(timer);
+            resetButton();
+            saveData();
+        }
+
+        function watchReset(params) {
+            clearInterval(timer);
+            resetButton();
+            [seconds, minutes, hours] = [0, 0, 0];
+            displayTime.innerHTML = "00:00:00";
+            // displayTime.innerHTML = hr + ":" + min + ":" + sec;
+            localStorage.setItem("hr", "0"+0);
+            localStorage.setItem("min", "0"+0);
+            localStorage.setItem("sec", "0"+0);
+        }
+
+        function saveData() {
+            localStorage.setItem("hr", hr);
+            localStorage.setItem("min", min);
+            localStorage.setItem("sec", sec);
+            
+            //localStorage.setItem("data", displayTime.innerHTML);
+        }
+
+        function showTask() {
+            displayTime.innerHTML = hr + ":" + min + ":" + sec;
+        }
+        showTask();
+
+        function resetButton() {
+            document.getElementById('startBtn').style.display = 'block';
+            document.getElementById('stopBtn').style.display = 'none';
+        }
+
+    </script>
+
+</body>
+
+</html>
